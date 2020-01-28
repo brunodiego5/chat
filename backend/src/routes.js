@@ -1,6 +1,8 @@
 const { Router } = require('express');
-const DevController = require('./controllers/DevController');
-const SearchController = require('./controllers/SearchController');
+const UserController = require('./controllers/UserController');
+const MessageController = require('./controllers/MessageController');
+const SearchMessageController = require('./controllers/SearchMessageController');
+
 
 const routes = Router();
 
@@ -13,9 +15,11 @@ const routes = Router();
 //route params: request.params (identificar um recurso no put ou delete)
 //body: request.body (dados para post ou put de um registro) )
 
-routes.get('/devs', DevController.index);
-routes.post('/devs', DevController.store);
+routes.get('/users', UserController.index);
+routes.post('/users', UserController.store);
 
-routes.get('/search', SearchController.index);
+routes.get('/messages', MessageController.index);
+routes.post('/messages', MessageController.store);
+routes.get('/searchmessages', SearchMessageController.index);
 
 module.exports = routes;

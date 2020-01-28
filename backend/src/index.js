@@ -11,7 +11,7 @@ const server = http.Server(app); //server fora do app
 setupWebsocket(server);
 
 // mongodb (nao relacional)
-mongoose.connect('mongodb+srv://brunodiego5:brunodiego5@cluster0-fwtlo.mongodb.net/week10?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://brunodiego5:brunodiego5@cluster0-fwtlo.mongodb.net/chat?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

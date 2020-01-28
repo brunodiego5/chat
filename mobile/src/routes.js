@@ -3,13 +3,20 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import Main from './pages/Main';
 import Profile from './pages/Profile';
+import Chat from './pages/Chat';
 
 const Routes = createAppContainer(
     createStackNavigator({
         Main: {
             screen: Main,
             navigationOptions: {
-                title: 'DevRadar'
+                title: 'Login'
+            }
+        },
+        Chat: {
+            screen: Chat,
+            navigationOptions: {
+                title: 'Chat'
             }
         },
         Profile: {

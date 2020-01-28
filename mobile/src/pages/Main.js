@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Image, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import MapView, { Marker, Callout } from 'react-native-maps';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import { requestPermissionsAsync, getCurrentPositionAsync} from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import api from '../services/api';
-import { connect, disconnect, subscribeToNewDevs } from '../services/socket';
 
 function Main( { navigation } ) {
-    const [devs, setDevs ] = useState([]);
+    const [name, setName] = useState('bruno');
+    const [email, setEmail] = useState('bruno_diego5@hotmail.com');
+    
     const [currentRegion, setCurrentRegion] = useState(null);
-    const [techs, setTechs] = useState('');
 
     useEffect(() => {
         async function loadInitialPosition() {
@@ -28,44 +27,14 @@ function Main( { navigation } ) {
                     longitude,
                     latitudeDelta: 0.04,
                     longitudeDelta: 0.04,
-                })
+                });
+
+                console.log('main currentRegion:', currentRegion);
             }
         }
 
         loadInitialPosition();
     }, []);
-
-    useEffect(() => {
-        subscribeToNewDevs(dev => setDevs([...devs, dev]));
-    }, [devs]);
-    
-    function setupWebsocket() {
-        disconnect();
-
-        const { latitude, longitude } = currentRegion;
-
-        connect(
-            latitude,
-            longitude,
-            techs,
-        );
-
-    }
-
-    async function loadDevs() {
-        const { latitude, longitude } = currentRegion;
-
-        const response = await api.get('/search', {
-            params: {
-                latitude,
-                longitude,
-                techs
-            }
-        });
-
-        setDevs(response.data.devs);
-        setupWebsocket();
-    }
 
     function handleRegionChanged(region) {
         setCurrentRegion(region);
@@ -75,51 +44,54 @@ function Main( { navigation } ) {
         return null;
     }
 
+    async function handleSubmit() {
+        const response = await api.post('users', {
+            name,
+            email,
+            latitude: currentRegion.latitude,
+            longitude: currentRegion.longitude
+        });
+        
+        await AsyncStorage.setItem('user', JSON.stringify(response.data));
+        navigation.navigate('Chat');
+    }
+
     return (
         <>
-            <MapView  
-                onRegionChangeComplete={handleRegionChanged} 
-                initialRegion={currentRegion} 
-                style={styles.map} 
-            >
-                {devs.map(dev => (
-                    <Marker
-                        key={dev._id} 
-                        coordinate={{ 
-                            latitude: dev.location.coordinates[1], 
-                            longitude: dev.location.coordinates[0], 
-                        }}
-                    >
-                        <Image 
-                            style={styles.avatar} 
-                            source= { { uri: dev.avatar_url }}
-                        />
-                        <Callout onPress={() => {
-                            navigation.navigate('Profile', { github_username: dev.github_username });
-                        }}>
-                            <View style={styles.callout}>
-                                <Text style={styles.devName}>{dev.name}</Text>
-                                <Text style={styles.devBio}>{dev.bio}</Text>
-                                <Text style={styles.devTechs}>{dev.techs.join(', ')}</Text>
-                            </View>
-                        </Callout>
-                    </Marker>
-                ))}
-            </MapView>
-            <View style={styles.searchForm}>
-                <TextInput 
-                    style={styles.searchInput}
-                    placeholder="Buscar devs por techs..."
-                    placeholderTextColor="#999"
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    value={techs}
-                    onChangeText={setTechs}
-                />
-                <TouchableOpacity  onPress={loadDevs} style={styles.loadButton}>
-                    <MaterialIcons name="my-location" size={20} color="#fff"/>
-                </TouchableOpacity>
+          <View style={styles.inputBlock}>
+            <Text>Nome</Text>
+            <TextInput 
+              required
+              value={name}
+              onChangeText={setName} />
+          </View>
+
+          <View style={styles.inputBlock}>
+            <Text>Email</Text>
+            <TextInput 
+              value={email}
+              onChangeText={setEmail}/>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <View style={styles.inputBlock}>
+              <Text>Latitude</Text>
+              <TextInput 
+                value={`${currentRegion.latitude}`}
+                onChangeText={latitude => setCurrentRegion({latitude})}/>
             </View>
+
+            <View style={styles.inputBlock}>
+              <Text>Longitude</Text>
+              <TextInput 
+                value={`${currentRegion.longitude}`}
+                onChangeText={longitude => setCurrentRegion({longitude})}/>
+            </View>
+            <TouchableOpacity onPress={handleSubmit} style={styles.loginButton}>
+                    <MaterialIcons name="lock" size={20} color="#fff"/>
+                </TouchableOpacity>
+          </View>
+          
         </>
     );
 }
@@ -175,6 +147,23 @@ const styles = StyleSheet.create({
         elevation: 2,
    },
    loadButton: {
+       width: 50,
+       height: 50,
+       backgroundColor: '#8e4dff',
+       borderRadius: 25,
+       justifyContent: 'center',
+       alignItems: 'center',
+       marginLeft: 15,
+
+   },
+   inputBlock: {
+    marginTop: 20,
+   },
+   inputGroup: {
+    marginTop: 20,
+    display: 'flex',
+   },
+   loginButton: {
        width: 50,
        height: 50,
        backgroundColor: '#8e4dff',

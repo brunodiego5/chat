@@ -1,25 +1,24 @@
-li.dev-item {
-    background: #FFF;
+li.message-item {
     background: #FFF;
     box-shadow:  0 0 14px 0 rgba(0, 0, 0, 0.02);
     border-radius: 2px;
     padding: 20px;
 }
 
-li.dev-item header {
+li.message-item header {
     display: flex;
     flex-direction: row;
     align-items: center;
 
 }
 
-li.dev-item header img {
+li.message-item header img {
     width: 54px;
     height: 54px;
     border-radius: 50%;
 }
 
-li.dev-item header .user-info {
+li.message-item header .user-info {
     margin-left: 10px;
 }
 
@@ -35,19 +34,19 @@ li.dev-item header .user-info {
     margin-top: 2px;
 }
 
-li.dev-item p {
+li.message-item p {
     color: #666;
     font-size: 14px;
     line-height: 20px;
     margin: 10px 0;
 }
 
-li.dev-item a {
+li.message-item a {
     color: #8e4dff;
     font-size: 14px;
     text-decoration: none;
 }
 
-li.dev-item a:hover {
+li.message-item a:hover {
     color:#5a2ea6;
 }
