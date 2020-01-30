@@ -17,18 +17,19 @@ import mouth from '../../assets/mouth.svg';
 // Estado: Informações mantidas pelo componente (lembrar imutabilidade)
 
 function Login( { history } ) {
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+  const [coords, setCoords] = useState({})
+
+  const getCoords = ({coords}) => {
+    const {latitude, longitude} = coords
+    console.log('setou');
+    setCoords({latitude, longitude})
+  }
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
-        console.log({latitude, longitude});
-
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setupWebsocket(latitude, longitude);
+        getCoords(position);
+        setupWebsocket();
 
       },
       (err) => {
@@ -38,7 +39,7 @@ function Login( { history } ) {
         timeout: 30000,
       }
     ); 
-  }, []);
+  });
 
   async function handleAddUser(data) {
     const response = await api.post('users', data);
@@ -48,12 +49,13 @@ function Login( { history } ) {
     history.push('/chat');
   }
 
-  function setupWebsocket(latitude, longitude) {
+  function setupWebsocket() {
+    console.log('setupWebsocket')
     disconnect();
 
     connect(
-        latitude,
-        longitude
+        coords.latitude,
+        coords.longitude
     );
 
 }
