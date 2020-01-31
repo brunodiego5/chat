@@ -1,37 +1,48 @@
-const socketio = require('socket.io');
-const calculateDistance = require('./utils/calculateDistance');
+import socketio from 'socket.io';
+import calculateDistance from './utils/calculateDistance';
 
-let io;
-//em uma aplicação, poderia usar um banco de dados, redis por exemplo
-const connections = [];
+class WebSocket {
+  constructor() {
+    this.io = {};
+    // em uma aplicação, poderia usar um banco de dados, redis por exemplo
+    this.connections = [];
+  }
 
-exports.setupWebsocket = (server) => {
-    io = socketio(server);
+  setupWebsocket(server) {
+    this.io = socketio(server);
 
-    //listen no connection
-    io.on('connection', socket => { 
-        const { latitude, longitude } = socket.handshake.query;
+    // listen no connection
+    this.io.on('connection', socket => {
+      const { latitude, longitude } = socket.handshake.query;
 
-        connections.push({
-            id: socket.id,
-            coordinates: {
-                latitude: Number(latitude),
-                 longitude: Number(longitude),
-            }
-        });
+      this.connections.push({
+        id: socket.id,
+        coordinates: {
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+        },
+      });
 
-        console.log(connections);
+      // console.log(this.connections);
     });
-};
+  }
 
-exports.findConnectionsByCoordinates = (coordinates) => {
-    return connections.filter(connection => {
-        return calculateDistance(coordinates, connection.coordinates) < 10
-    })
-}
+  findConnectionsByCoordinates(coordinates) {
+    return this.connections.filter(connection => {
+      return (
+        calculateDistance.getDistanceFromLatLonInKm(
+          coordinates,
+          connection.coordinates
+        ) < 10
+      );
+    });
+  }
 
-exports.sendMessage = (to, message, data) => {
+  sendMessage(to, message, data) {
     to.forEach(connection => {
-        io.to(connection.id).emit(message, data);
-    })
+      this.io.to(connection.id).emit(message, data);
+    });
+  }
 }
+
+export default new WebSocket();
