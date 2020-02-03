@@ -2,6 +2,7 @@ import { Router } from 'express';
 import UserController from './app/controllers/UserController';
 import MessageController from './app/controllers/MessageController';
 import SearchMessageController from './app/controllers/SearchMessageController';
+import SessionController from './app/controllers/SessionController';
 
 const routes = new Router();
 
@@ -19,5 +20,7 @@ routes.post('/users', UserController.store);
 routes.get('/messages', MessageController.index);
 routes.post('/messages', MessageController.store);
 routes.get('/searchmessages', SearchMessageController.index);
+
+routes.post('/sessions', SessionController.store);
 
 export default routes;

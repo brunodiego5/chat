@@ -31,6 +31,10 @@ UserSchema.virtual('password').set(function setPassword(password) {
   this.password_hash = bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 });
 
+UserSchema.methods.checkPassword = function checkPassword(password) {
+  return bcrypt.compare(password, this.password_hash);
+};
+
 /* UserSchema.pre('save', function hashPassword(next) {
   if (this.isModified('password_hash')) {
     this.password_hash = bcrypt.hashSync(
