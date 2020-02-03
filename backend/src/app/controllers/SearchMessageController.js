@@ -6,7 +6,7 @@ class SearchMessageController {
 
     const { latitude, longitude } = request.query; // desestruturação
 
-    // console.log(request.query);
+    console.log(request.query);
 
     const messages = await Message.find({
       location: {

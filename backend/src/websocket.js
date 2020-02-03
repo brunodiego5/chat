@@ -9,10 +9,12 @@ class WebSocket {
   }
 
   setupWebsocket(server) {
+    console.log(server);
     this.io = socketio(server);
 
     // listen no connection
     this.io.on('connection', socket => {
+      console.log(socket);
       const { latitude, longitude } = socket.handshake.query;
 
       this.connections.push({
@@ -23,7 +25,7 @@ class WebSocket {
         },
       });
 
-      // console.log(this.connections);
+      console.log(this.connections);
     });
   }
 

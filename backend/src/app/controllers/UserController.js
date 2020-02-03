@@ -10,7 +10,7 @@ class UserController {
   }
 
   async store(request, response) {
-    const { name, email, latitude, longitude } = request.body; // desestruturação
+    const { name, email, latitude, longitude, password } = request.body; // desestruturação
 
     let user = await User.findOne({ email });
     if (!user) {
@@ -24,6 +24,7 @@ class UserController {
         name,
         email,
         location,
+        password,
       });
     }
 

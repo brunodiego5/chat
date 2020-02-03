@@ -29,7 +29,6 @@ function Login( { history } ) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         getCoords(position);
-        setupWebsocket();
 
       },
       (err) => {
@@ -38,27 +37,30 @@ function Login( { history } ) {
       {
         timeout: 30000,
       }
-    ); 
+    );
   });
 
+  useEffect(() => {
+    const setupWebsocket = () => {
+      console.log('setupWebsocket')
+      disconnect();
+  
+      connect(
+          coords.latitude,
+          coords.longitude
+      );
+  };
+  setupWebsocket();
+}, [coords]);
+
   async function handleAddUser(data) {
+    console.log('ueee');
     const response = await api.post('users', data);
     
     localStorage.setItem('user', JSON.stringify(response.data));
 
     history.push('/chat');
   }
-
-  function setupWebsocket() {
-    console.log('setupWebsocket')
-    disconnect();
-
-    connect(
-        coords.latitude,
-        coords.longitude
-    );
-
-}
 
   return (    
     <div id="app" className="container-login">

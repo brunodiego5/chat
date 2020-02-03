@@ -9,12 +9,10 @@ class App {
   constructor() {
     this.server = express();
 
-    this.http = http.Server(this.server);
-
     this.middlewares();
     this.routes();
 
-    websocket.setupWebsocket(this.http);
+    this.http = http.createServer(this.server);
 
     mongoose.connect(
       'mongodb+srv://brunodiego5:brunodiego5@cluster0-fwtlo.mongodb.net/chat?retryWrites=true&w=majority',
@@ -23,12 +21,14 @@ class App {
         useUnifiedTopology: true,
       }
     );
+
+    websocket.setupWebsocket(this.http);
   }
 
   // todos os middlewares do app
   middlewares() {
+    this.server.use(cors('*'));
     this.server.use(express.json());
-    this.server.use(cors());
   }
 
   routes() {
