@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema(
       default: Date.now,
     },
     password_hash: String,
+    provider: Boolean,
   },
   {
     toJSON: {
