@@ -38,12 +38,12 @@ class UserController {
       coordinates: [longitude, latitude],
     };
 
-    const user = { rest, location };
+    const user = { ...rest, location };
 
     // Object short syntax
-    const { id, name, email, provider } = await User.create(user);
+    const { _id, name, email, provider } = await User.create(user);
 
-    return response.json({ id, name, email, location, provider });
+    return response.json({ _id, name, email, location, provider });
   }
 
   async update(req, res) {
@@ -82,18 +82,27 @@ class UserController {
     }
 
     const { latitude, longitude, ...rest } = req.body; // desestruturação
-
     const location = {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
 
-    const user = { rest, location };
+    /* new user */
+    const user = { _id: req.userId, ...rest, location };
 
-    // Object short syntax
-    const { id, name, provider } = await User.update(user);
+    /* old user */
+    const userFind = await User.findById(req.userId);
 
-    return res.json({ id, name, email, location, provider });
+    /* set properties new */
+    await userFind.set(user);
+
+    /* save user */
+    await userFind.save();
+
+    /* return some properties */
+    const { _id, name, provider } = userFind;
+
+    return res.json({ _id, name, email, location, provider });
   }
 }
 

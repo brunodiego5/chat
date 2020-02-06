@@ -22,6 +22,7 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddlewares);
 
 routes.get('/users', UserController.index);
+routes.put('/users', UserController.update);
 routes.get('/messages', MessageController.index);
 routes.post('/messages', MessageController.store);
 routes.get('/searchmessages', SearchMessageController.index);

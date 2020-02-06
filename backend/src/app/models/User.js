@@ -36,15 +36,4 @@ UserSchema.methods.checkPassword = function checkPassword(password) {
   return bcrypt.compare(password, this.password_hash);
 };
 
-/* UserSchema.pre('save', function hashPassword(next) {
-  if (this.isModified('password_hash')) {
-    this.password_hash = bcrypt.hashSync(
-      this.password_hash,
-      bcrypt.genSaltSync(8)
-    );
-  }
-  next();
-}); */
-
-// module.exports = mongoose.model('User', UserSchema);
 export default mongoose.model('User', UserSchema);
