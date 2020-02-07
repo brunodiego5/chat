@@ -16,6 +16,10 @@ const UserSchema = new mongoose.Schema(
     },
     password_hash: String,
     provider: Boolean,
+    avatar_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'File',
+    },
   },
   {
     toJSON: {

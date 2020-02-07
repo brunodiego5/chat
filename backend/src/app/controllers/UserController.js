@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import User from '../models/User';
+import File from '../models/File';
 
 // index, show, store, update, destroy
 
@@ -65,7 +66,14 @@ class UserController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { email, oldPassword } = req.body;
+    const {
+      email,
+      oldPassword,
+      latitude,
+      longitude,
+      avatar_id,
+      ...rest
+    } = req.body; // desestruturação
 
     const userLogged = await User.findById(req.userId);
 
@@ -81,14 +89,22 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { latitude, longitude, ...rest } = req.body; // desestruturação
+    /* se existe um arquivo, verificar se ele existe na tabela */
+    if (avatar_id) {
+      const file = await File.findById(avatar_id);
+
+      if (!file) {
+        return res.status(400).json({ error: 'File does not exists' });
+      }
+    }
+
     const location = {
       type: 'Point',
       coordinates: [longitude, latitude],
     };
 
     /* new user */
-    const user = { _id: req.userId, ...rest, location };
+    const user = { _id: req.userId, ...rest, location, avatar_id };
 
     /* old user */
     const userFind = await User.findById(req.userId);
@@ -102,7 +118,7 @@ class UserController {
     /* return some properties */
     const { _id, name, provider } = userFind;
 
-    return res.json({ _id, name, email, location, provider });
+    return res.json({ _id, name, email, location, provider, avatar_id });
   }
 }
 
