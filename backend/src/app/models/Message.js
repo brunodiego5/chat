@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate';
 import PointSchema from './utils/PointSchema';
 
 const MessageSchema = new mongoose.Schema({
@@ -16,5 +17,7 @@ const MessageSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+MessageSchema.plugin(mongoosePaginate);
 
 export default mongoose.model('Message', MessageSchema);

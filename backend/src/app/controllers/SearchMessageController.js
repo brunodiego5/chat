@@ -4,21 +4,28 @@ class SearchMessageController {
   async index(request, response) {
     // buscar todas  as mensagens num raio de 10km
 
-    const { latitude, longitude } = request.query; // desestruturação
+    const { latitude, longitude, page = 1 } = request.query; // desestruturação
 
     console.log(request.query);
 
-    const messages = await Message.find({
-      location: {
-        $near: {
-          $geometry: {
-            type: 'Point',
-            coordinates: [longitude, latitude],
+    const messages = await Message.paginate(
+      {
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [longitude, latitude],
+            },
+            $maxDistance: 10000,
           },
-          $maxDistance: 10000,
         },
       },
-    });
+      {
+        page,
+        limit: 20,
+        sort: { createdAt: 'desc' },
+      }
+    );
 
     return response.json({ messages });
   }

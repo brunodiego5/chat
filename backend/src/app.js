@@ -1,9 +1,12 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import http from 'http';
+import path from 'path';
 import routes from './routes';
 import websocket from './WebSocket';
+
+/* tem que importar pra executar a conexão */
+import './database';
 
 class App {
   constructor() {
@@ -14,15 +17,6 @@ class App {
 
     this.http = http.createServer(this.server);
 
-    mongoose.connect(
-      'mongodb+srv://brunodiego5:brunodiego5@cluster0-fwtlo.mongodb.net/chat?retryWrites=true&w=majority',
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-      }
-    );
-
     websocket.setupWebsocket(this.http);
   }
 
@@ -30,6 +24,11 @@ class App {
   middlewares() {
     this.server.use(cors('*'));
     this.server.use(express.json());
+    /* habilitar o acesso para arquivos static */
+    this.server.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
   }
 
   routes() {

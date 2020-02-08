@@ -42,9 +42,9 @@ class UserController {
     const user = { ...rest, location };
 
     // Object short syntax
-    const { _id, name, email, provider } = await User.create(user);
+    const { _id, name, email } = await User.create(user);
 
-    return response.json({ _id, name, email, location, provider });
+    return response.json({ _id, name, email, location });
   }
 
   async update(req, res) {
@@ -116,9 +116,9 @@ class UserController {
     await userFind.save();
 
     /* return some properties */
-    const { _id, name, provider } = userFind;
+    const { _id, name } = userFind;
 
-    return res.json({ _id, name, email, location, provider, avatar_id });
+    return res.json({ _id, name, email, location, avatar_id });
   }
 }
 

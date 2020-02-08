@@ -33,5 +33,6 @@ routes.get('/messages', MessageController.index);
 routes.post('/messages', MessageController.store);
 routes.get('/searchmessages', SearchMessageController.index);
 routes.post('/files', upload.single('file'), FileController.store);
+routes.get('/files', FileController.index);
 
 export default routes;

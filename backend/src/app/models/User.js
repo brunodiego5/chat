@@ -15,7 +15,6 @@ const UserSchema = new mongoose.Schema(
       default: Date.now,
     },
     password_hash: String,
-    provider: Boolean,
     avatar_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'File',
