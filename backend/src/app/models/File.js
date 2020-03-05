@@ -18,7 +18,7 @@ const FileSchema = new mongoose.Schema(
 
 /* campo virtual para retornar a url pronta */
 FileSchema.virtual('url').get(function() {
-  return `http://localhost:3333/files/${this.path}`;
+  return `${process.env.APP_URL}/files/${this.path}`;
 });
 
 export default mongoose.model('File', FileSchema);
